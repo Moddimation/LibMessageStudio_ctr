@@ -30,7 +30,7 @@ if (WIN32)
     set(CMAKE_ASM_COMPILER_WORKS TRUE)
 endif()
 
-project(LibMessageStudio C)
+project(ms C)
 
 if (NOT WIN32)
     set_compilers()
@@ -38,16 +38,15 @@ endif()
 
 __compiler_armcc(C)
 
-file(GLOB_RECURSE csourcefiles "Source/*.c")
+file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c)
 
-add_library(LibMessageStudio ${csourcefiles})
+add_library(ms ${SOURCES})
 
-target_compile_options(LibMessageStudio PUBLIC $<$<COMPILE_LANGUAGE:C>:
-    --apcs=//interwork --cpu=MPCore --fpmode=fast --c99 --arm
-    --signed_chars --multibyte-chars --locale=japanese
-    -Otime --data-reorder --split_sections
-    >)
+target_compile_definitions(ms PUBLIC NON_MATCHING=)
+target_include_directories(ms PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_compile_definitions(LibMessageStudio PUBLIC NON_MATCHING=)
+target_compile_options(ms PUBLIC $<$<COMPILE_LANGUAGE:C>:--apcs=//interwork --arm --c99>)
+target_compile_options(ms PUBLIC $<$<COMPILE_LANGUAGE:C>:--cpu=MPCore --fpmode=fast>)
+target_compile_options(ms PUBLIC $<$<COMPILE_LANGUAGE:C>:--locale=japanese --multibyte-chars --signed_chars>)
+target_compile_options(ms PUBLIC $<$<COMPILE_LANGUAGE:C>:-Otime --data-reorder --split_sections>)
 
-target_include_directories(LibMessageStudio PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Include)
